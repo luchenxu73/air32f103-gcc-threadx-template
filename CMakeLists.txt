@@ -56,10 +56,11 @@ include_directories("Driver/AIR32F10xLib/inc"
         "Core/inc")
 
 include_directories(Components/I2C/inc)
+include_directories(Middlewares/cmsis_rtos_threadx/inc)
 add_subdirectory(Middlewares/threadx)
 add_subdirectory(Components)
 
-file(GLOB_RECURSE SOURCES "Driver/*.*" "Core/*.*")
+file(GLOB_RECURSE SOURCES "Driver/*.*" "Core/*.*" "Middlewares/cmsis_rtos_threadx/*.c")
 
 set(LINKER_SCRIPT ${CMAKE_SOURCE_DIR}/STM32F103CBTX_FLASH.ld)
 

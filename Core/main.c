@@ -2,6 +2,7 @@
 #include "soft_i2c.h"
 #include "air32f10x_conf.h"
 #include "tx_api.h"
+#include "cmsis_os2.h"
 
 #define DEMO_STACK_SIZE         1024
 
@@ -15,37 +16,63 @@
 /* Define the ThreadX object control blocks...  */
 
 TX_THREAD thread_0;
-int a = 1;
-int b = 1;
+
 void GPIO_Configuration(void);
 
 void thread_0_entry(ULONG thread_input);
 
+void thread_1_entry(void *thread_input);
+
 int main(void) {
+
     GPIO_Configuration();
-    tx_kernel_enter();
-    a=2;
-    b=3;
+
+    osKernelInitialize();
+
+    osThreadAttr_t attr;
+//    osThreadNew(thread_1_entry, NULL, NULL);
+    osThreadNew((osThreadFunc_t) thread_0_entry, NULL, NULL);
+
+    osKernelStart();
+
     while (1) {
     }
 }
 
-void tx_application_define(void *first_unused_memory) {
-
-    /* Create a byte memory pool from which to allocate the thread stacks.  */
-
-    /* Put system definition stuff in here, e.g. thread creates and other assorted
-       create information.  */
-
-    /* Allocate the stack for thread 0.  */
-
-    /* Create the main thread.  */
-    tx_thread_create(&thread_0, "thread 0", thread_0_entry, 0,
-                     first_unused_memory, DEMO_STACK_SIZE,
-                     1, 1, TX_NO_TIME_SLICE, TX_AUTO_START);
-}
+//void tx_application_define(void *first_unused_memory) {
+//
+//    /* Create a byte memory pool from which to allocate the thread stacks.  */
+//
+//    /* Put system definition stuff in here, e.g. thread creates and other assorted
+//       create information.  */
+//
+//    /* Allocate the stack for thread 0.  */
+//
+//    /* Create the main thread.  */
+//    tx_thread_create(&thread_0, "thread 0", thread_0_entry, 0,
+//                     first_unused_memory, DEMO_STACK_SIZE,
+//                     1, 1, TX_NO_TIME_SLICE, TX_AUTO_START);
+//}
 
 void thread_0_entry(ULONG thread_input) {
+
+    UINT status;
+
+
+    /* This thread simply sits in while-forever-sleep loop.  */
+    while (1) {
+
+        /* Increment the thread counter.  */
+        GPIO_SetBits(GPIO_GROUP_TEST, GPIO_PIN1_TEST);
+        /* Sleep for 10 ticks.  */
+        tx_thread_sleep(2000);
+        GPIO_ResetBits(GPIO_GROUP_TEST, GPIO_PIN1_TEST);
+        tx_thread_sleep(2000);
+
+    }
+}
+
+void thread_1_entry(void *thread_input) {
 
     UINT status;
 

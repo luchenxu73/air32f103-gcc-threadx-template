@@ -114,6 +114,9 @@
 #define TX_TIMER_THREAD_PRIORITY                ????
 */
 
+#define TX_MAX_PRIORITIES                       64
+#define TX_THREAD_USER_EXTENSION  ULONG tx_thread_detached_joinable;
+
 /* Define the common timer tick reference for use by other middleware components. The default
    value is 10ms (i.e. 100 ticks, defined in tx_api.h), but may be replaced by a port-specific
    version in tx_port.h or here.
